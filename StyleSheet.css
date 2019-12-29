@@ -1,0 +1,67 @@
+img {
+  width: 80%;
+  height: auto;
+  -moz-box-shadow: 0 0 10px black;
+  -webkit-box-shadow: 0 0 10px black;
+  box-shadow: 0 0 10px black;
+}
+body {
+  overflow-x: hidden;
+}
+#MyContents{
+  position: relative; width: 80%; margin: 50px auto; padding: 20px; -moz-box-shadow: 0 0 20px black; -webkit-box-shadow: 0 0 20px black; box-shadow: 0 0 20px black;
+}
+img.bg {
+  /*set rule to fill background*/
+  min-height: 100%;
+  min-width: 100%;
+  /*setup proportional scaling*/
+  width:100%;
+  height: auto;
+  /*setup positioning*/
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+table.minimalistBlack {
+  border: 3px solid #000000;
+  text-align: left;
+  border-collapse: collapse;
+}
+table.minimalistBlack td, table.minimalistBlack th {
+  border: 1px solid #000000;
+  padding: 5px 4px;
+}
+table.minimalistBlack tbody td {
+  font-size: 26px;
+}
+table.minimalistBlack thead {
+  background: #CFCFCF;
+  background: -moz-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
+  background: -webkit-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
+  background: linear-gradient(to bottom, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
+  border-bottom: 3px solid #000000;
+}
+table.minimalistBlack thead th {
+  font-size: 30px;
+  font-weight: bold;
+  color: #000000;
+  text-align: left;
+}
+tr:nth-child(even) {background-color: #d8e7ff;}
+tr:nth-child(odd) {background-color: white;}
+th {background-color: #037bfc;}
+h1 {
+  border: 4px double black;
+  border-radius: 10px;                                                                                                                                                             ^@
+}
+#header {
+  border-radius: 5px;
+  text-shadow: 1px 0 0 #fff, -1px 0 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+}
+h2 {
+  text-shadow: 1px 0 0 #fff, -1px 0 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+}
+h3 {
+  text-shadow: 1px 0 0 #fff, -1px 0 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+}
