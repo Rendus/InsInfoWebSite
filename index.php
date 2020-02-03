@@ -1,6 +1,6 @@
 <?php
   #phpinfo();
-  require(dirname(__FILE__).'/data.php');
+  require(dirname(__FILE__).'/GetData.php');
 ?>
 
 <!DOCTYPE html>
