@@ -1,0 +1,40 @@
+Create EC2 KeyPair:
+aws ec2 create-key-pair --key-name MyDemoKeyPair --query 'KeyMaterial' --output text > MyDemoKeyPair.pem
+chmod 400 MyDemoKeyPair.pem
+
+MyDemoCluster
+
+aws cloudformation create-stack --stack-name MyDemoStack --template-body file://./CFNTemplate/ECS_Cluster.yml --parameters ParameterKey=AsgMaxSize,ParameterValue=1 ParameterKey=EcsAmiId,ParameterValue=ami-0a6dd2dfe55885625 ParameterKey=EcsCluster,ParameterValue=MyDemoCluster ParameterKey=EcsInstanceType,ParameterValue=t2.medium ParameterKey=KeyName,ParameterValue=MyDemoKeyPair --capabilities CAPABILITY_NAMED_IAM
+
+aws cloudformation describe-stacks --stack-name MyDemoStack
+
+aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text
+
+aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $(aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text | xargs) --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text
+
+aws ecs create-capacity-provider --name MyDemoProvider --auto-scaling-group-provider "autoScalingGroupArn=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $(aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text | xargs) --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text|xargs),managedScaling={status=ENABLED,targetCapacity=100,maximumScalingStepSize=1},managedTerminationProtection=DISABLED"
+
+aws ecs create-cluster --cluster-name MyDemoCluster --capacity-providers MyDemoProvider --default-capacity-provider-strategy capacityProvider=MyDemoProvider,weight=1,base=1
+
+aws ecs describe-clusters --clusters MyDemoCluster
+
+aws iam create-role --role-name DemoEcsTaskRole --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{"Effect":"Allow","Principal":{"Service":"ecs-tasks.amazonaws.com"},"Action":"sts:AssumeRole"}]}'
+
+aws iam attach-role-policy --role-name DemoEcsTaskRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+aws iam get-role --role-name DemoEcsTaskRole --query 'Role.Arn' --output text
+
+# Change Role Arn in Task Definition
+aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+
+aws ecs run-task --cluster MyDemoCluster --task-definition MyDemoTask:1
+
+Create ELB
+Create Service with that
+Update ASG to use Spot
+
+Update Cluster provider with FARGET and FARGET_SPOT Providers
+Create a Task Definition with Farget
+Create Task with it.
+Create a new service with fargate
+Create a new service with fargate spot

@@ -1,0 +1,32 @@
+{
+    "family": "MyDemoTask",
+    "taskRoleArn": "arn:aws:iam::342241566140:role/DemoEcsTaskRole",
+    "containerDefinitions": [
+        {
+            "name": "MyWebContainer",
+            "image": "342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_variable_and_logging_v4",
+            "cpu": 128,
+            "memory": 128,
+            "memoryReservation": 100,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "COLOUR",
+                    "value": "white"
+                }
+            ]
+        }
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "128",
+    "memory": "128"
+}

@@ -657,7 +657,17 @@
         },
         "UserData": {
           "Fn::Base64": {
-            "Ref": "UserData"
+            "Fn::Join": [ "\n",
+              [
+                "#!/bin/bash",
+                {
+                  "Fn::Join": ["", [
+                    "echo \"ECS_CLUSTER=",
+                    { "Ref": "EcsCluster" },"\" >> /etc/ecs/ecs.config"
+                  ]]
+                }
+              ]
+            ]
           }
         }
       }
