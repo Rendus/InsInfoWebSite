@@ -509,7 +509,7 @@ Resources:
       LaunchConfigurationName: !Ref EcsInstanceLc
       MinSize: '0'
       MaxSize: !Ref AsgMaxSize
-      DesiredCapacity: !Ref AsgMaxSize
+      DesiredCapacity: 2
       Tags:
         - Key: Name
           Value: ECS Instance - amazon-ecs-cli-setup-MyWorkingCluster
