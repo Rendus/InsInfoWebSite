@@ -79,7 +79,7 @@
     ```
 1. Change Role Arn in Task Definition
     ```
-    sed -ie "s#THIS_TASK_ROLE_ARN#$TASK_ROLE_ARN/g" ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    sed -ie "s#THIS_TASK_ROLE_ARN#$TASK_ROLE_ARN#g" ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
     ```
 1. Register Task Definition
     ```
