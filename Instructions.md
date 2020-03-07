@@ -1,5 +1,4 @@
-# Instructions to use this repo
-
+# Repository Usages Instructions
 1. Clone this Repo
     ```
     cd ~
@@ -27,7 +26,7 @@
     chmod 400 $KEYPAIR.pem
 
     ```
-1. Create ECS Cluster and EC2 Resources required to create ECS Services
+1. Get AMI ID and Create ECS and EC2 Resources using CFN Template
     ```
     export ECS_AMI_ID=$(aws ssm get-parameters --names /aws/service/ecs/optimized-ami/amazon-linux/recommended/image_id --query 'Parameters[*].Value' --output text)
     echo $ECS_AMI_ID
@@ -37,14 +36,10 @@
     ```
     aws cloudformation describe-stacks --stack-name $CFN_STACK
     ```
-1. Get ECS Cluster Name
+1. Initialize needed variables from CFN resources
     ```
     export ECS_CLUSTER_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id MyEcsCluster --query 'StackResourceDetail.PhysicalResourceId' --output text)
     echo $ECS_CLUSTER_NAME
-    
-    ```
-1. Get the name of ASG created by above CFN Stack
-    ```
     export ASG_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text)
     echo $ASG_NAME
     export TG_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id DefaultTargetGroup --query 'StackResourceDetail.PhysicalResourceId' --output text)
@@ -52,13 +47,11 @@
     ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id LoadBalancer --query 'StackResourceDetail.PhysicalResourceId' --output text)
     export ALB_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ALB_ARN --output text --query 'LoadBalancers[*].LoadBalancerName')
     echo $ALB_NAME
-    ```
-1. Get the ARN of ASG created by above CFN Stack
-    ```
-    export ASG_ARN=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $(aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text | xargs) --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text)
+    ASG_NAME=$(aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text)
+    export ASG_ARN=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text)
     echo $ASG_ARN
     ```
-1. Enable Instance Termination Protection on ASG and on ASG Instances
+1. Enable Instance Termination Protection on ASG and on existing ASG Instances
     ```
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --new-instances-protected-from-scale-in
     ASG_INSTANCES=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --output text --query 'AutoScalingGroups[*].Instances[*].InstanceId')
@@ -112,30 +105,27 @@
     sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
     aws ecs create-service --cli-input-json file://./ECS_Service.json
     ```
-1. Clien up
-```
-aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0
-sleep 30
-aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force
-TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]')
-for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME; done
-aws ecs deregister-task-definition --task-definition $TASK_NAME:1
-aws iam detach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-aws iam delete-role --role-name $TASK_ROLE_NAME
-ASG_INSTANCES=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --output text --query 'AutoScalingGroups[*].Instances[*].InstanceId')
-for INS in $ASG_INSTANCES; do aws autoscaling set-instance-protection --instance-ids $INS --auto-scaling-group-name $ASG_NAME --no-protected-from-scale-in; done
-aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --no-new-instances-protected-from-scale-in
-aws ec2 delete-key-pair --key-name $KEYPAIR
-aws cloudformation delete-stack --stack-name $CFN_STACK
-```
-
-Update ASG to use Spot
-
-Update Cluster provider with FARGET and FARGET_SPOT Providers
-Create a Task Definition with Farget
-Create Task with it.
-Create a new service with fargate
-Create a new service with fargate spot
-
-Add SG rule for VPC CIDR for instance SG
-Service Role for ECS
+1. Cleaning up resources
+    ```
+    aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0
+    sleep 30
+    aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force
+    TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]')
+    for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME; done
+    aws ecs deregister-task-definition --task-definition $TASK_NAME:1
+    aws iam detach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+    aws iam delete-role --role-name $TASK_ROLE_NAME
+    ASG_INSTANCES=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --output text --query 'AutoScalingGroups[*].Instances[*].InstanceId')
+    for INS in $ASG_INSTANCES; do aws autoscaling set-instance-protection --instance-ids $INS --auto-scaling-group-name $ASG_NAME --no-protected-from-scale-in; done
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --no-new-instances-protected-from-scale-in
+    aws ec2 delete-key-pair --key-name $KEYPAIR
+    aws cloudformation delete-stack --stack-name $CFN_STACK
+    ```
+1. TODOs
+    1. Service Role for ECS
+    1. Update ASG to use Spot
+    1. Update Cluster provider with FARGET and FARGET_SPOT Providers
+    1. Create a Task Definition with Farget
+    1. Create Task with it.
+    1. Create a new service with fargate
+    1. Create a new service with fargate spot
