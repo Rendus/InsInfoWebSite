@@ -131,8 +131,7 @@
     ```
 1. URL to view the webpage
     ```
-    ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id LoadBalancer --query
-     'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
+    ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id LoadBalancer --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
      aws elbv2 describe-load-balancers --load-balancer-arns ${ALB_ARN} --query 'LoadBalancers[*].DNSName' --output text | sed -e 's#.*#http://&#g'
     ```
 1. Cleaning up resources
