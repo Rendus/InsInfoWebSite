@@ -107,15 +107,20 @@
     ```
     aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
     ```
+1. Get Task Definition ARN
+```
+export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[*]' --output text --region $REGION)
+echo $TASK_ARN
+```
 1. Run a task with registered Task Definition
     ```
-    aws ecs run-task --cluster $ECS_CLUSTER_NAME --task-definition $TASK_NAME:1 --region $REGION
+    aws ecs run-task --cluster $ECS_CLUSTER_NAME --task-definition $TASK_ARN --region $REGION
     ```
 1. Create an ECS Service File
     ```
     sed -ie "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" ./ECS_Service.json
     sed -ie "s#SERVICE_NAME#$SERVICE_NAME#g" ./ECS_Service.json
-    sed -ie "s#TASK_DEFINITION#$TASK_NAME:1#g" ./ECS_Service.json
+    sed -ie "s#TASK_DEFINITION#$TASK_ARN#g" ./ECS_Service.json
     sed -ie "s#TG_ARN#$TG_ARN#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
@@ -140,7 +145,7 @@ ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --l
     TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]' --region $REGION)
     for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME --region $REGION; done
     
-    aws ecs deregister-task-definition --task-definition $TASK_NAME:1 --region $REGION
+    aws ecs deregister-task-definition --task-definition $TASK_ARN --region $REGION
     
     aws iam detach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy --region $REGION
     
