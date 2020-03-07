@@ -137,12 +137,11 @@
 1. Cleaning up resources
     ```
     aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0 --region $REGION
-    sleep 30
-    
-    aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force --region $REGION
     
     TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]' --region $REGION)
     for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME --region $REGION; done
+    
+    aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force --region $REGION
     
     aws ecs deregister-task-definition --task-definition $TASK_ARN --region $REGION
     
