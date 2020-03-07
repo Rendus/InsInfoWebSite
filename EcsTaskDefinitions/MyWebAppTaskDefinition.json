@@ -1,9 +1,9 @@
 {
-    "family": "MY_DEMO_TASK_FAMILY",
+    "family": "TASK_FAMILY",
     "taskRoleArn": "THIS_TASK_ROLE_ARN",
     "containerDefinitions": [
         {
-            "name": "MyWebContainer",
+            "name": "TASK_NAME",
             "image": "CONTAINER_IMAGE",
             "cpu": 128,
             "memory": 128,
