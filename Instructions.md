@@ -37,6 +37,7 @@
     ```
     export ECS_AMI_ID=$(aws ssm get-parameters --names /aws/service/ecs/optimized-ami/amazon-linux/recommended/image_id --query 'Parameters[*].Value' --output text --region $REGION)
     echo $ECS_AMI_ID
+    
     aws cloudformation create-stack --stack-name $CFN_STACK --template-body file://./CFNTemplate/ECS_Cluster.yaml  --parameters ParameterKey=AsgMaxSize,ParameterValue=5 ParameterKey=EcsAmiId,ParameterValue=$ECS_AMI_ID ParameterKey=EcsInstanceType,ParameterValue=$INSTANCE_TYPE ParameterKey=KeyName,ParameterValue=$KEYPAIR --capabilities CAPABILITY_NAMED_IAM  --region $REGION
     ```
 1. Check status of CFN and confirm it's creation is complete
@@ -48,13 +49,17 @@
     ```
     export ECS_CLUSTER_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id MyEcsCluster --query 'StackResourceDetail.PhysicalResourceId' --output text  --region $REGION)
     echo $ECS_CLUSTER_NAME
+    
     export ASG_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text  --region $REGION)
     echo $ASG_NAME
+    
     export TG_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id DefaultTargetGroup --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
     echo $TG_ARN
+    
     ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id LoadBalancer --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
     export ALB_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ALB_ARN --output text --query 'LoadBalancers[*].LoadBalancerName'  --region $REGION)
     echo $ALB_NAME
+    
     ASG_NAME=$(aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
     export ASG_ARN=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text --region $REGION)
     echo $ASG_ARN
@@ -62,8 +67,10 @@
 1. Enable Instance Termination Protection on ASG and on existing ASG Instances
     ```
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --new-instances-protected-from-scale-in --region $REGION
+    
     ASG_INSTANCES=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --output text --query 'AutoScalingGroups[*].Instances[*].InstanceId' --region $REGION)
     echo $ASG_INSTANCES
+    
     for INS in $ASG_INSTANCES; do aws autoscaling set-instance-protection --instance-ids $INS --auto-scaling-group-name $ASG_NAME --protected-from-scale-in --region $REGION; done
     ```
 1. Create ECS Cluster Capacity Provide
@@ -82,7 +89,9 @@
 1. Create a IAM role for Task and attach "AmazonECSTaskExecutionRolePolicy" policy to it
     ```
     aws iam create-role --role-name $TASK_ROLE_NAME --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{"Effect":"Allow","Principal":{"Service":"ecs-tasks.amazonaws.com"},"Action":"sts:AssumeRole"}]}' --region $REGION
+    
     aws iam attach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy --region $REGION
+    
     export TASK_ROLE_ARN=$(aws iam get-role --role-name DemoEcsTaskRole --query 'Role.Arn' --output text --region $REGION)
     echo $TASK_ROLE_ARN
     ```
@@ -97,6 +106,7 @@
     sed -ie "s#CONTAINER_IMAGE#$CONTAINER_IMAGE#g" ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
     sed -ie "s#PAGE_COLOUR#$PAGE_COLOUR#g"         ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
     sed -ie "s#TASK_NAME#$TASK_NAME#g"             ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    
     aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
     ```
 1. Run a task with registered Task Definition
@@ -111,22 +121,32 @@
     sed -ie "s#TG_ARN#$TG_ARN#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
+    
     aws ecs create-service --cli-input-json file://./ECS_Service.json --region $REGION
     ```
 1. Cleaning up resources
     ```
     aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0 --region $REGION
     sleep 30
+    
     aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force --region $REGION
+    
     TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]' --region $REGION)
     for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME --region $REGION; done
+    
     aws ecs deregister-task-definition --task-definition $TASK_NAME:1 --region $REGION
+    
     aws iam detach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy --region $REGION
+    
     aws iam delete-role --role-name $TASK_ROLE_NAME --region $REGION
+    
     ASG_INSTANCES=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --output text --query 'AutoScalingGroups[*].Instances[*].InstanceId' --region $REGION)
     for INS in $ASG_INSTANCES; do aws autoscaling set-instance-protection --instance-ids $INS --auto-scaling-group-name $ASG_NAME --no-protected-from-scale-in --region $REGION; done
+    
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --no-new-instances-protected-from-scale-in --region $REGION
+    
     aws ec2 delete-key-pair --key-name $KEYPAIR --region $REGION
+    
     aws cloudformation delete-stack --stack-name $CFN_STACK --region $REGION
     ```
 1. TODOs
