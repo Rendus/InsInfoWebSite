@@ -60,7 +60,6 @@
     export ALB_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ALB_ARN --output text --query 'LoadBalancers[*].LoadBalancerName'  --region $REGION)
     echo $ALB_NAME
     
-    ASG_NAME=$(aws cloudformation describe-stack-resource --stack-name MyDemoStack --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
     export ASG_ARN=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text --region $REGION)
     echo $ASG_ARN
     ```
