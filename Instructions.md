@@ -115,11 +115,18 @@
 1. Clien up
 ```
 aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0
+sleep 30
 aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force
 TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]')
 for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME; done
 aws ecs deregister-task-definition --task-definition $TASK_NAME:1
-
+aws iam detach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+aws iam delete-role --role-name $TASK_ROLE_NAME
+ASG_INSTANCES=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --output text --query 'AutoScalingGroups[*].Instances[*].InstanceId')
+for INS in $ASG_INSTANCES; do aws autoscaling set-instance-protection --instance-ids $INS --auto-scaling-group-name $ASG_NAME --no-protected-from-scale-in; done
+aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG_NAME --no-new-instances-protected-from-scale-in
+aws ec2 delete-key-pair --key-name $KEYPAIR
+aws cloudformation delete-stack --stack-name $CFN_STACK
 ```
 
 Update ASG to use Spot
