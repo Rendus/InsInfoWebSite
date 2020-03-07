@@ -14,5 +14,15 @@
         "maximumPercent": 200,
         "minimumHealthyPercent": 100
     },
-    "healthCheckGracePeriodSeconds": 2
+    "healthCheckGracePeriodSeconds": 2,
+    "placementStrategy": [
+        {
+            "type": "spread",
+            "field": "attribute:ecs.availability-zone"
+        },
+        {
+        "field": "instanceId",
+        "type": "binpack"
+        }
+    ]
 }
