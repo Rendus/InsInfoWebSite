@@ -104,3 +104,5 @@ Create a Task Definition with Farget
 Create Task with it.
 Create a new service with fargate
 Create a new service with fargate spot
+
+Service Role for ECS
