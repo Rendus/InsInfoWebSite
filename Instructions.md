@@ -10,7 +10,6 @@
     ```
     export KEYPAIR="MyDemoKeyPair"
     export CFN_STACK="InsInfoCluster"
-    export ECS_CLUSTER_NAME="MyDemoCluster"
     export CP_NAME="MyDemoProvider-$(date +%d%m%Y-%H%M%S)"
     export TASK_ROLE_NAME="DemoEcsTaskRole"
     export TASK_FAMILY="MyDemoTask"
@@ -35,6 +34,11 @@
 1. Check status of CFN and confirm it's creation is complete
     ```
     aws cloudformation describe-stacks --stack-name $CFN_STACK
+    ```
+1. Get ECS Cluster Name
+    ```
+    export ECS_CLUSTER_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id MyEcsCluster --query 'StackResourceDetail.PhysicalResourceId' --output text)
+    echo $ECS_CLUSTER_NAME
     ```
 1. Get the name of ASG created by above CFN Stack
     ```
