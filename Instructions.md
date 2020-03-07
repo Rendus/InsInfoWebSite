@@ -41,7 +41,8 @@
     ```
 1. Check status of CFN and confirm it's creation is complete
     ```
-    aws cloudformation describe-stacks --stack-name $CFN_STACK  --region $REGION
+    aws cloudformation describe-stacks --stack-name $CFN_STACK --region $REGION
+    aws cloudformation describe-stacks --stack-name $CFN_STACK --region $REGION --output json --query 'Stacks[*].StackStatus' 
     ```
 1. Initialize needed variables from CFN resources
     ```
