@@ -110,6 +110,16 @@
     sed -ie "s#TG_ARN#$TG_ARN#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
+    aws ecs create-service --cli-input-json file://./ECS_Service.json
+    ```
+1. Clien up
+```
+aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0
+aws ecs delete-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --force
+TASKS=$(aws ecs list-tasks --cluster $ECS_CLUSTER_NAME --output text --query 'taskArns[*]')
+for TASK in $TASKS; do aws ecs stop-task --task $TASK --cluster $ECS_CLUSTER_NAME; done
+aws ecs deregister-task-definition --task-definition $TASK_NAME:1
+
 ```
 
 Update ASG to use Spot
