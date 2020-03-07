@@ -30,7 +30,7 @@
     ```
     export ECS_AMI_ID=$(aws ssm get-parameters --names /aws/service/ecs/optimized-ami/amazon-linux/recommended/image_id --query 'Parameters[*].Value' --output text)
     echo $ECS_AMI_ID
-    aws cloudformation create-stack --stack-name $CFN_STACK --template-body file://./CFNTemplate/ECS_Cluster.yaml  --parameters ParameterKey=AsgMaxSize,ParameterValue=5 ParameterKey=EcsAmiId,ParameterValue=$ECS_AMI_ID ParameterKey=EcsCluster,ParameterValue=$ECS_CLUSTER_NAME ParameterKey=EcsInstanceType,ParameterValue=$INSTANCE_TYPE ParameterKey=KeyName,ParameterValue=$KEYPAIR --capabilities CAPABILITY_NAMED_IAM
+    aws cloudformation create-stack --stack-name $CFN_STACK --template-body file://./CFNTemplate/ECS_Cluster.yaml  --parameters ParameterKey=AsgMaxSize,ParameterValue=5 ParameterKey=EcsAmiId,ParameterValue=$ECS_AMI_ID ParameterKey=EcsInstanceType,ParameterValue=$INSTANCE_TYPE ParameterKey=KeyName,ParameterValue=$KEYPAIR --capabilities CAPABILITY_NAMED_IAM
     ```
 1. Check status of CFN and confirm it's creation is complete
     ```
