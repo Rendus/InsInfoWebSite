@@ -107,10 +107,10 @@
     sed -ie "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" ./ECS_Service.json
     sed -ie "s#SERVICE_NAME#$SERVICE_NAME#g" ./ECS_Service.json
     sed -ie "s#TASK_DEFINITION#$TASK_NAME:1#g" ./ECS_Service.json
-    sed -ie "#TG_ARN#$TG_ARN#g" ./ECS_Service.json
-    sed -ie "#ALB_NAME#$ALB_NAME#g" ./ECS_Service.json
-    sed -ie "#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
-    sed -ie "#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
+    sed -ie "s#TG_ARN#$TG_ARN#g" ./ECS_Service.json
+    sed -ie "s#ALB_NAME#$ALB_NAME#g" ./ECS_Service.json
+    sed -ie "s#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
+    sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
 ```
 
 Update ASG to use Spot
