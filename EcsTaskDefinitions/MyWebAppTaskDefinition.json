@@ -1,6 +1,6 @@
 {
-    "family": "MyDemoTask",
-    "taskRoleArn": "arn:aws:iam::342241566140:role/DemoEcsTaskRole",
+    "family": "MY_DEMO_TASK_FAMILY",
+    "taskRoleArn": "THIS_TASK_ROLE_ARN",
     "containerDefinitions": [
         {
             "name": "MyWebContainer",
@@ -10,7 +10,7 @@
             "memoryReservation": 100,
             "portMappings": [
                 {
-                    "containerPort": 80,
+                    "containerPort": CONTAINER_PORT,
                     "hostPort": 0,
                     "protocol": "tcp"
                 }
@@ -19,7 +19,7 @@
             "environment": [
                 {
                     "name": "COLOUR",
-                    "value": "white"
+                    "value": "YOUR_COLOUR"
                 }
             ]
         }
