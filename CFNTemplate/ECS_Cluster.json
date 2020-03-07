@@ -621,6 +621,18 @@
                         "CidrIp": {
                             "Ref": "SourceCidr"
                         }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 0,
+                        "ToPort": 65535,
+                        "CidrIp": {
+                            "Fn::FindInMap": [
+                                "VpcCidrs",
+                                "vpc",
+                                "cidr"
+                            ]
+                        }
                     }
                 ]
             }

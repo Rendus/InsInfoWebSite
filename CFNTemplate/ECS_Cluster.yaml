@@ -435,6 +435,13 @@ Resources:
           FromPort: !Ref EcsPort
           ToPort: !Ref EcsPort
           CidrIp: !Ref SourceCidr
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: !FindInMap 
+            - VpcCidrs
+            - vpc
+            - cidr
   EcsInstanceRole:
     Condition: CreateEcsInstanceRole
     Type: 'AWS::IAM::Role'
