@@ -785,9 +785,7 @@
                 "MaxSize": {
                     "Ref": "AsgMaxSize"
                 },
-                "DesiredCapacity": {
-                    "Ref": "AsgMaxSize"
-                },
+                "DesiredCapacity": 2,
                 "Tags": [
                     {
                         "Key": "Name",
