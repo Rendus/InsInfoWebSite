@@ -1,5 +1,5 @@
 {
-    "cluster": "CLUSTER_NAME",
+    "cluster": "ECS_CLUSTER_NAME",
     "serviceName": "SERVICE_NAME",
     "taskDefinition": "TASK_DEFINITION",
     "loadBalancers": [
