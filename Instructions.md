@@ -15,9 +15,11 @@
     export TASK_FAMILY="MyDemoTask"
     export TASK_NAME=$TASK_FAMILY
     export CONTAINER_PORT=80
+    export CONTAINER_NAME="$TASK_NAME"
     export CONTAINER_IMAGE='342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_variable_and_logging_v4'
     export PAGE_COLOUR='Blue'
     export INSTANCE_TYPE='t2.medium'
+    export SERVICE_NAME="InsInfoService"
     ```
 1. Create EC2 KeyPair
     ```
@@ -39,11 +41,17 @@
     ```
     export ECS_CLUSTER_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id MyEcsCluster --query 'StackResourceDetail.PhysicalResourceId' --output text)
     echo $ECS_CLUSTER_NAME
+    
     ```
 1. Get the name of ASG created by above CFN Stack
     ```
     export ASG_NAME=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id EcsInstanceAsg --query 'StackResourceDetail.PhysicalResourceId' --output text)
     echo $ASG_NAME
+    export TG_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id DefaultTargetGroup --query 'StackResourceDetail.PhysicalResourceId' --output text)
+    echo $TG_ARN
+    ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id LoadBalancer --query 'StackResourceDetail.PhysicalResourceId' --output text)
+    export ALB_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ALB_ARN --output text --query 'LoadBalancers[*].LoadBalancerName')
+    echo $ALB_NAME
     ```
 1. Get the ARN of ASG created by above CFN Stack
     ```
@@ -94,9 +102,17 @@
     ```
     aws ecs run-task --cluster $ECS_CLUSTER_NAME --task-definition $TASK_NAME:1
     ```
+1. Create an ECS Service
+    ```
+    sed -ie "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" ./ECS_Service.json
+    sed -ie "s#SERVICE_NAME#$SERVICE_NAME#g" ./ECS_Service.json
+    sed -ie "s#TASK_DEFINITION#$TASK_NAME:1#g" ./ECS_Service.json
+    sed -ie "#TG_ARN#$TG_ARN#g" ./ECS_Service.json
+    sed -ie "#ALB_NAME#$ALB_NAME#g" ./ECS_Service.json
+    sed -ie "#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
+    sed -ie "#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
+```
 
-Create ELB
-Create Service with that
 Update ASG to use Spot
 
 Update Cluster provider with FARGET and FARGET_SPOT Providers
