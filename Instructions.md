@@ -74,7 +74,7 @@
     ```
 1. Create ECS Cluster Capacity Provide
     ```
-    aws ecs create-capacity-provider --name $CP_NAME --auto-scaling-group-provider "autoScalingGroupArn=${ASG_ARN},managedScaling={status=ENABLED,targetCapacity=10,minimumScalingStepSize=1,maximumScalingStepSize=2},managedTerminationProtection=ENABLED --region $REGION"
+    aws ecs create-capacity-provider --name $CP_NAME --auto-scaling-group-provider "autoScalingGroupArn=${ASG_ARN},managedScaling={status=ENABLED,targetCapacity=10,minimumScalingStepSize=1,maximumScalingStepSize=2},managedTerminationProtection=ENABLED" --region $REGION
     ```
 1. Associate the Cluster Capacity Provider with the ECS Cluster
     ```
