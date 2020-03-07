@@ -124,6 +124,12 @@
     ```   
     aws ecs create-service --cli-input-json file://./ECS_Service.json --region $REGION
     ```
+1. URL to view the webpage
+```
+ALB_ARN=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id LoadBalancer --query
+ 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
+ aws elbv2 describe-load-balancers --load-balancer-arns ${ALB_ARN} --query 'LoadBalancers[*].DNSName' --output text | sed -e 's#.*#http://&#g'
+```
 1. Cleaning up resources
     ```
     aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $SERVICE_NAME --desired-count 0 --region $REGION
