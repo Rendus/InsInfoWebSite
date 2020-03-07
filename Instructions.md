@@ -120,4 +120,5 @@ Create Task with it.
 Create a new service with fargate
 Create a new service with fargate spot
 
+Add SG rule for VPC CIDR for instance SG
 Service Role for ECS
