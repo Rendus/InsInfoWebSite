@@ -2,8 +2,8 @@
 1. Clone this Repo
     ```
     cd ~
-    git clone https://github.com/santosh07bec/MyTestWebSite.git
-    cd MyTestWebSite
+    git clone https://github.com/santosh07bec/InsInfoWebSite.git
+    cd InsInfoWebSite
     ```
 1. Define Parameters
     ```
