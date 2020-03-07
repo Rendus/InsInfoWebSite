@@ -1,0 +1,19 @@
+{
+    "cluster": "CLUSTER_NAME",
+    "serviceName": "SERVICE_NAME",
+    "taskDefinition": "TASK_DEFINITION",
+    "loadBalancers": [
+        {
+            "targetGroupArn": "TG_ARN",
+            "loadBalancerName": "ALB_NAME",
+            "containerName": "CONTAINER_NAME",
+            "containerPort": CONTAINER_PORT
+        }
+    ],
+    "desiredCount": 3,
+    "deploymentConfiguration": {
+        "maximumPercent": 100,
+        "minimumHealthyPercent": 200
+    },
+    "healthCheckGracePeriodSeconds": 2
+}
