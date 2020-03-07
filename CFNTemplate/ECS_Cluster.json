@@ -421,7 +421,6 @@
             "Condition": "CreateECSCluster",
             "Type": "AWS::ECS::Cluster",
             "Properties": {
-                "ClusterName": "InsInfoCluster",
                 "ClusterSettings": [
                     {
                         "Name": "containerInsights",
