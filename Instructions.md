@@ -64,7 +64,7 @@
 
 1. Varify if Cluster Capacity Provider was associated with ECS Cluster Properly
     ```
-    aws ecs describe-clusters --clusters MyDemoCluster
+    aws ecs describe-clusters --clusters $ECS_CLUSTER_NAME
     ```
 1. Create a IAM role for Task and attach "AmazonECSTaskExecutionRolePolicy" policy to it
     ```
