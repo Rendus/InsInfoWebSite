@@ -129,3 +129,4 @@
     1. Create Task with it.
     1. Create a new service with fargate
     1. Create a new service with fargate spot
+    1. AppMesh Integration
