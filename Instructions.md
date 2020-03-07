@@ -94,25 +94,24 @@
     export TASK_ROLE_ARN=$(aws iam get-role --role-name DemoEcsTaskRole --query 'Role.Arn' --output text --region $REGION)
     echo $TASK_ROLE_ARN
     ```
-1. Change Role Arn in Task Definition
+1. Build Task Definition file
     ```
     sed -ie "s#THIS_TASK_ROLE_ARN#$TASK_ROLE_ARN#g" ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    sed -ie "s#TASK_FAMILY#$TASK_FAMILY#g"          ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g"    ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    sed -ie "s#CONTAINER_IMAGE#$CONTAINER_IMAGE#g"  ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    sed -ie "s#PAGE_COLOUR#$PAGE_COLOUR#g"          ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
+    sed -ie "s#TASK_NAME#$TASK_NAME#g"              ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
     ```
 1. Register Task Definition
     ```
-    sed -ie "s#TASK_FAMILY#$TASK_FAMILY#g" ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
-    sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g"   ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
-    sed -ie "s#CONTAINER_IMAGE#$CONTAINER_IMAGE#g" ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
-    sed -ie "s#PAGE_COLOUR#$PAGE_COLOUR#g"         ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
-    sed -ie "s#TASK_NAME#$TASK_NAME#g"             ./EcsTaskDefinitions/MyWebAppTaskDefinition.json
-    
     aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
     ```
 1. Run a task with registered Task Definition
     ```
     aws ecs run-task --cluster $ECS_CLUSTER_NAME --task-definition $TASK_NAME:1 --region $REGION
     ```
-1. Create an ECS Service
+1. Create an ECS Service File
     ```
     sed -ie "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" ./ECS_Service.json
     sed -ie "s#SERVICE_NAME#$SERVICE_NAME#g" ./ECS_Service.json
@@ -120,7 +119,9 @@
     sed -ie "s#TG_ARN#$TG_ARN#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
-    
+    ```
+1. Create an ECS Service
+    ```   
     aws ecs create-service --cli-input-json file://./ECS_Service.json --region $REGION
     ```
 1. Cleaning up resources
