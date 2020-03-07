@@ -4,7 +4,7 @@
     "containerDefinitions": [
         {
             "name": "MyWebContainer",
-            "image": "342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_variable_and_logging_v4",
+            "image": "CONTAINER_IMAGE",
             "cpu": 128,
             "memory": 128,
             "memoryReservation": 100,
@@ -19,7 +19,7 @@
             "environment": [
                 {
                     "name": "COLOUR",
-                    "value": "YOUR_COLOUR"
+                    "value": "PAGE_COLOUR"
                 }
             ]
         }
