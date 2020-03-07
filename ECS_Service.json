@@ -5,15 +5,14 @@
     "loadBalancers": [
         {
             "targetGroupArn": "TG_ARN",
-            "loadBalancerName": "ALB_NAME",
             "containerName": "CONTAINER_NAME",
             "containerPort": CONTAINER_PORT
         }
     ],
     "desiredCount": 3,
     "deploymentConfiguration": {
-        "maximumPercent": 100,
-        "minimumHealthyPercent": 200
+        "maximumPercent": 200,
+        "minimumHealthyPercent": 100
     },
     "healthCheckGracePeriodSeconds": 2
 }
