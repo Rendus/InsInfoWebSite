@@ -9,7 +9,7 @@
 1. Define Parameters
     ```
     export KEYPAIR="MyDemoKeyPair"
-    export CFN_STACK="MyDemoStack"
+    export CFN_STACK="InsInfoCluster"
     export ECS_CLUSTER_NAME="MyDemoCluster"
     export CP_NAME="MyDemoProvider-$(date +%d%m%Y-%H%M%S)"
     export TASK_ROLE_NAME="DemoEcsTaskRole"
