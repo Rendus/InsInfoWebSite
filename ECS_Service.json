@@ -21,7 +21,7 @@
             "field": "attribute:ecs.availability-zone"
         },
         {
-        "field": "instanceId",
+        "field": "memory",
         "type": "binpack"
         }
     ]
