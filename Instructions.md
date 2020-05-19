@@ -102,6 +102,10 @@
     sed -ie "s#TG_ARN#$TG_ARN#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_NAME#$CONTAINER_NAME#g" ./ECS_Service.json
     sed -ie "s#CONTAINER_PORT#$CONTAINER_PORT#g" ./ECS_Service.json
+    sed '4 i\
+        "schedulingStrategy": "REPLICA",' ./ECS_Service.json
+    sed '4 i\
+        "launchType": "EC2",' ./ECS_Service.json
     ```
 1. Create an ECS Service
     ```   
