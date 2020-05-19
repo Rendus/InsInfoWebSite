@@ -22,7 +22,7 @@
     export TASK_NAME=$TASK_FAMILY
     export CONTAINER_PORT=80
     export CONTAINER_NAME="$TASK_NAME"
-    export CONTAINER_IMAGE='342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_variable_and_logging_v4'
+    export CONTAINER_IMAGE='santosham2007s/ec2-instance-info:v1'
     export PAGE_COLOUR='Blue'
     export INSTANCE_TYPE='t2.medium'
     export SERVICE_NAME="InsInfoService"
