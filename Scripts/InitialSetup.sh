@@ -7,6 +7,8 @@
 # Note: While executing this script, be sure to have awscli configured properly and git installed. Then SOURCE the      #
 # script using "." or "source" command so that you have all the environment variable in your SHELL to execute the       #
 # commands after step 8. Do not use "sh", "bash", or "./" to execute it.                                                #
+#                                                                                                                       #
+# [1] https://github.com/santosh07bec/InsInfoWebSite/blob/master/Instructions.md                                        #
 #########################################################################################################################
 
 
