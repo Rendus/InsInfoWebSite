@@ -87,7 +87,7 @@
     ```
 1. Get Task Definition ARN
     ```
-    export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[*]' --output text --region $REGION)
+    export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[-1]' --output text --region $REGION)
     echo $TASK_ARN
     ```
 1. Run a task with registered Task Definition
