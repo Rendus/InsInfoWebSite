@@ -18,14 +18,26 @@
 TEMPDIR="/tmp/ECSDEMO-$(date +%d%m%Y-%H%M%S)"
 mkdir -p $TEMPDIR
 
+Exit(){
+ echo -e "\nPress Ctrl/Command + c to abort script execution or press Enter to enter this terminal window\n\n"
+ read
+ exit $1
+}
+
 if [[ "x$(aws ecs describe-clusters --region ap-south-1 >/dev/null 2>&1; echo $?)" != 'x0' ]]; then
-  echo -e "aws cli is either not install or not configured properly.\nInstall and configure aws cli before proceeding"
-  exit 1
+  echo -e "\naws cli is either not install or not configured properly.\nInstall and configure aws cli before proceeding\n"
+  Exit 1
 fi
 
 if ! which git >/dev/null; then
-  echo -e "Git is not installed or not in PATH, please install before proceeding"
-  exit 1
+  echo -e "\nGit is not installed or not in PATH, please install before proceeding\n"
+  Exit 1
+fi
+
+if ! which jq >/dev/null; then
+  echo -e "\njq is not installed or not in PATH, please install before proceeding"
+  echo -e "\nYou can install it in MAC using \"brew install jq\"\n\n"
+  Exit 1
 fi
 
 cd $TEMPDIR
