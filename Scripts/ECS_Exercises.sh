@@ -1,6 +1,11 @@
 #!/bin/bash
 
-. ./InitialSetup.txt
+PWD=$(pwd)
+cd ./Scripts
+
+source ./InitialSetup.txt
+
+cd $PWD
 
 aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
 export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[-1]' --output text --region $REGION)
