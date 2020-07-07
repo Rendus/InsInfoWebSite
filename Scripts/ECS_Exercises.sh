@@ -2,11 +2,18 @@
 
 PROCEED='n'
 
-InitialSetupLocation='.'
+InitialSetupLocationD='.'
 read -p "This script requires resources created by script InitialSetup.sh. Provide the location where script \"InitialSetup.sh\" is located, like \"/tmp/mydir\" to proceed further.
 Default is \"$InitialSetupLocation\": " InitialSetupLocation
 
-source $InitialSetupLocation/InitialSetup.sh
+if [[ -s $InitialSetupLocation/InitialSetup.sh ]]; then
+  source $InitialSetupLocation/InitialSetup.sh
+elif [[ -s $InitialSetupLocationD/InitialSetup.sh ]]; then
+  source $InitialSetupLocationD/InitialSetup.sh
+else
+  echo -e "Can't locate InitialSetup.sh, press Control/Command + c to exit"
+  exit 1
+fi
 
 aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
 export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[-1]' --output text --region $REGION)
