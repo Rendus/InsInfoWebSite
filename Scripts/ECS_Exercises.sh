@@ -114,8 +114,8 @@ RT=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPCID --query '
 IAMPROFILE=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id 'EcsInstanceProfile' --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
 
 aws ec2 authorize-security-group-ingress --group-id $DEFAULT_SG --protocol tcp --port 443 --cidr $VPCCIDR --region $REGION
-PRI_SUB_1=$(aws ec2 create-subnet --vpc-id $VPCID --availability-zone us-east-1a --cidr-block '10.0.202.0/24' --output text --query 'Subnet.SubnetId' --region $REGION)
-PRI_SUB_2=$(aws ec2 create-subnet --vpc-id $VPCID --availability-zone us-east-1b --cidr-block '10.0.203.0/24' --output text --query 'Subnet.SubnetId' --region $REGION)
+PRI_SUB_1=$(aws ec2 create-subnet --vpc-id $VPCID --availability-zone "$REGION"a --cidr-block '10.0.202.0/24' --output text --query 'Subnet.SubnetId' --region $REGION)
+PRI_SUB_2=$(aws ec2 create-subnet --vpc-id $VPCID --availability-zone "$REGION"b --cidr-block '10.0.203.0/24' --output text --query 'Subnet.SubnetId' --region $REGION)
 
 VPCEID1=$(aws ec2 create-vpc-endpoint --vpc-id $VPCID --vpc-endpoint-type Interface --service-name com.amazonaws.$REGION.ecr.api --subnet-ids $PRI_SUB_1 $PRI_SUB_2 --security-group-ids $DEFAULT_SG $ECS_SG1 --query 'VpcEndpoint.VpcEndpointId' --output text --region $REGION)
 VPCEID2=$(aws ec2 create-vpc-endpoint --vpc-id $VPCID --vpc-endpoint-type Interface --service-name com.amazonaws.$REGION.ecr.dkr --subnet-ids $PRI_SUB_1 $PRI_SUB_2 --security-group-ids $DEFAULT_SG $ECS_SG1 --query 'VpcEndpoint.VpcEndpointId' --output text --region $REGION)
@@ -123,8 +123,8 @@ VPCEID3=$(aws ec2 create-vpc-endpoint --vpc-id $VPCID --service-name com.amazona
 
 echo -e '#!/bin/bash\necho "ECS_CLUSTER='${ECS_CLUSTER_NAME}'">> /etc/ecs/ecs.config' > ./User_Data.txt 
 
-PRI_INS_ID1=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-type t2.medium --key-name MyDemoKeyPair --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_1 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
-PRI_INS_ID2=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-type t2.medium --key-name MyDemoKeyPair --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_2 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
+PRI_INS_ID1=$(aws ec2 run-instances --image-id $ECS_AMI_ID --instance-type $INSTANCE_TYPE --key-name $KEYPAIR --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_1 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
+PRI_INS_ID2=$(aws ec2 run-instances --image-id $ECS_AMI_ID --instance-type $INSTANCE_TYPE --key-name $KEYPAIR --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_2 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
 
 ##################### Exercise - 6 ########################
 unset PROCEED; read -p "Create resource for Exercise 6 (y/n)?: " PROCEED
