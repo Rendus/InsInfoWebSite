@@ -10,6 +10,7 @@ elif [[ -s $InitialSetupLocationD/InitialSetup.sh ]]; then
   source $InitialSetupLocationD/InitialSetup.sh
 else
   echo -e "Can't locate InitialSetup.sh, press Control/Command + c to exit"
+  read
   exit 1
 fi
 
