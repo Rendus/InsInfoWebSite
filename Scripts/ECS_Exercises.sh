@@ -3,7 +3,7 @@
 PWD=$(pwd)
 cd ./Scripts
 
-source ./InitialSetup.txt
+source ./InitialSetup.sh
 
 cd $PWD
 
