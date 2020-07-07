@@ -140,9 +140,10 @@ VPCEID6=$(aws ec2 create-vpc-endpoint --vpc-id $VPCID --vpc-endpoint-type Interf
 ECSINSTANCES=$(aws ecs list-container-instances --cluster $ECS_CLUSTER_NAME --filter 'not(attribute:stack == production)' --query 'containerInstanceArns' --output text --region $REGION)
 for INSTANCE in $ECSINSTANCES; do aws ecs put-attributes --attributes name=stack,value=InsInfoApp,targetId=$INSTANCE --cluster $ECS_CLUSTER_NAME --region $REGION; done
 
-MyECRImage='342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_var_logging_and_404_v5'
+MyECRImageD='342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_var_logging_and_404_v5'
 
 read -p "Exercise 6 needs to use a docker image from your ECR repo in $REGION region. Please provide docker image URL to proceed further: " MyECRImage
+MyECRImage="${MyECRImage:-$MyECRImageD}"
 
 cat EcsTaskDefinitions/MyWebAppTaskDefinition.json | jq '.containerDefinitions[0] += {"image": "342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_var_logging_and_404_v5"}' | jq --arg R $REGION  '.containerDefinitions[0] += {"logConfiguration": {"logDriver": "awslogs", "options": {"awslogs-group": "/ecs/MyDemoTask", "awslogs-region": $R, "awslogs-stream-prefix": "ecs"}}}' > EcsTaskDefinitions/EX6_MyWebAppTaskDefinition.json
 aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/EX6_MyWebAppTaskDefinition.json --region $REGION
