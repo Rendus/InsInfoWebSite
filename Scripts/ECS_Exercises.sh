@@ -147,7 +147,8 @@ aws ecs create-service --cli-input-json file://./EX6_ECS_Service.json --region $
 ##################### CleanUp #############################
 echo -e "\nUse below commands to cleanup resources created in this script\n\n
 RULES_ARN=$(aws elbv2 describe-rules --listener-arn $LISTNER_ARN --output text --query 'Rules[*].RuleArn' --region $REGION)
-for RULE in $RULES_ARN; do aws elbv2 delete-rule --rule-arn $RULE --region $REGION; done
+
+for RULE in "${RULES_ARN}"; do aws elbv2 delete-rule --rule-arn $RULE --region $REGION; done
 
 aws elbv2 delete-target-group --target-group-arn $EX1_TG_ARN --region $REGION
 aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $EX1_SERVICE_NAME --desired-count 0 --region $REGION
