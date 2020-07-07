@@ -6,7 +6,7 @@ InitialSetupLocation='./InitialSetup.sh'
 read -p "This script requires resources created by script InitialSetup.sh. Provide the location of script \"InitialSetup.sh\" like \"/tmp/mydir/InitialSetup.sh\" to proceed further.
 Default is \"./InitialSetup.sh\": " InitialSetupLocation
 
-source ./InitialSetup.sh
+source $InitialSetupLocation
 
 aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
 export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[-1]' --output text --region $REGION)
