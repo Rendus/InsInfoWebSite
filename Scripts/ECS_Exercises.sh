@@ -21,7 +21,7 @@ VPCID=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --log
 echo $VPCID
 
 ##################### Exercise - 1 ########################
-unset PROCEED; read -p "Create resource for Exercise 1 (y/n): " PROCEED?
+unset PROCEED; read -p "Create resource for Exercise 1 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
 
@@ -44,7 +44,7 @@ sed -ie '4 i\
 aws ecs create-service --cli-input-json file://./EX1_ECS_Service.json --region $REGION
 
 ##################### Exercise - 2 ########################
-unset PROCEED; read -p "Create resource for Exercise 2 (y/n): " PROCEED?
+unset PROCEED; read -p "Create resource for Exercise 2 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
 
@@ -62,7 +62,7 @@ sed -i '.org' -e "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" -e "s#TASK_DEFINITION#
 aws ecs create-service --cli-input-json file://./EX2_ECS_Service.json --region $REGION
 
 ##################### Exercise - 3 ########################
-unset PROCEED; read -p "Create resource for Exercise 3 (y/n): " PROCEED?
+unset PROCEED; read -p "Create resource for Exercise 3 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
 
@@ -83,7 +83,7 @@ sed -i '.org' -e "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" -e "s#TASK_DEFINITION#
 aws ecs create-service --cli-input-json file://./EX3_ECS_Service.json --region $REGION
 
 ##################### Exercise - 4 ########################
-unset PROCEED; read -p "Create resource for Exercise 4 (y/n): " PROCEED?
+unset PROCEED; read -p "Create resource for Exercise 4 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
 
@@ -100,7 +100,7 @@ for INSTANCE in $ECS_INSTANCES; do aws ecs put-attributes --attributes name=stac
 aws ecs create-service --cli-input-json file://./EX4_ECS_Service.json --region $REGION
 
 ##################### Exercise - 5 ########################
-unset PROCEED; read -p "Create resource for Exercise 5 (y/n): " PROCEED?
+unset PROCEED; read -p "Create resource for Exercise 5 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
 
@@ -126,7 +126,7 @@ PRI_INS_ID1=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-
 PRI_INS_ID2=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-type t2.medium --key-name MyDemoKeyPair --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_2 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
 
 ##################### Exercise - 6 ########################
-unset PROCEED; read -p "Create resource for Exercise 6 (y/n): " PROCEED?
+unset PROCEED; read -p "Create resource for Exercise 6 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
 

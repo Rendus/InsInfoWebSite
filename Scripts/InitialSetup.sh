@@ -18,7 +18,8 @@
 TEMPDIR="/tmp/ECSDEMO-$(date +%d%m%Y-%H%M%S)"
 mkdir -p $TEMPDIR
 
-export REGION="us-east-1"
+export REGION="us-west-2"
+#export REGION="us-east-1"
 export KEYPAIR="MyDemoKeyPair"
 export CFN_STACK="InsInfoCluster"
 export CP_NAME="MyDemoProvider-$(date +%d%m%Y-%H%M%S)"
