@@ -64,7 +64,7 @@ cd InsInfoWebSite
 aws ec2 create-key-pair --key-name $KEYPAIR --query 'KeyMaterial' --output text --region $REGION  > $KEYPAIR.pem
 chmod 400 $KEYPAIR.pem
 
-export ECS_AMI_ID=$(aws ssm get-parameters --names /aws/service/ecs/optimized-ami/amazon-linux/recommended/image_id --query 'Parameters[*].Value' --output text --region $REGION)
+export ECS_AMI_ID=$(aws ssm get-parameters --names /aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id --query 'Parameters[*].Value' --output text --region $REGION)
 echo $ECS_AMI_ID
 
 aws cloudformation create-stack --stack-name $CFN_STACK --template-body file://./CFNTemplate/ECS_Cluster.yaml  --parameters ParameterKey=AsgMaxSize,ParameterValue=5 ParameterKey=EcsAmiId,ParameterValue=$ECS_AMI_ID ParameterKey=EcsInstanceType,ParameterValue=$INSTANCE_TYPE ParameterKey=KeyName,ParameterValue=$KEYPAIR --capabilities CAPABILITY_NAMED_IAM  --region $REGION
