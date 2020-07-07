@@ -89,9 +89,12 @@ export ALB_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ALB_AR
 echo $ALB_NAME
 export ASG_ARN=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --query 'AutoScalingGroups[*].AutoScalingGroupARN' --output text --region $REGION)
 echo $ASG_ARN
+export INSTANCE_ROLE=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --logical-resource-id 'EcsInstanceRole' --query 'StackResourceDetail.PhysicalResourceId' --output text --region $REGION)
+echo $INSTANCE_ROLE
 
 aws iam create-role --role-name $TASK_ROLE_NAME --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{"Effect":"Allow","Principal":{"Service":"ecs-tasks.amazonaws.com"},"Action":"sts:AssumeRole"}]}' --region $REGION
 aws iam attach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy --region $REGION
+aws iam attach-role-policy --role-name $INSTANCE_ROLE --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM --region $REGION
 export TASK_ROLE_ARN=$(aws iam get-role --role-name DemoEcsTaskRole --query 'Role.Arn' --output text --region $REGION)
 echo $TASK_ROLE_ARN
 
