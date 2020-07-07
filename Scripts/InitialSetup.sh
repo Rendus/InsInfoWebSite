@@ -18,14 +18,29 @@
 TEMPDIR="/tmp/ECSDEMO-$(date +%d%m%Y-%H%M%S)"
 mkdir -p $TEMPDIR
 
+export REGION="us-east-1"
+export KEYPAIR="MyDemoKeyPair"
+export CFN_STACK="InsInfoCluster"
+export CP_NAME="MyDemoProvider-$(date +%d%m%Y-%H%M%S)"
+export TASK_ROLE_NAME="DemoEcsTaskRole"
+export TASK_FAMILY="MyDemoTask"
+export TASK_NAME=$TASK_FAMILY
+export CONTAINER_PORT=80
+export CONTAINER_NAME="$TASK_NAME"
+export CONTAINER_IMAGE='santosham2007s/ec2-instance-info:v1'
+# export CONTAINER_IMAGE='342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_var_logging_and_404_v5'
+export PAGE_COLOUR='Blue'
+export INSTANCE_TYPE='t2.medium'
+export SERVICE_NAME="InsInfoService"
+
 Exit(){
  echo -e "\nPress Ctrl/Command + c to abort script execution or press Enter to enter this terminal window\n\n"
  read
  exit $1
 }
 
-if [[ "x$(aws ecs describe-clusters --region ap-south-1 >/dev/null 2>&1; echo $?)" != 'x0' ]]; then
-  echo -e "\naws cli is either not install or not configured properly.\nInstall and configure aws cli before proceeding\n"
+if [[ "x$(aws ecs describe-clusters --region $REGION >/dev/null 2>&1; echo $?)" != 'x0' ]]; then
+  echo -e "\naws cli is either not install or not configured properly.\nInstall and/or configure aws cli before proceeding\n"
   Exit 1
 fi
 
@@ -44,20 +59,6 @@ cd $TEMPDIR
 git clone https://github.com/santosh07bec/InsInfoWebSite.git
 cd InsInfoWebSite
 
-export REGION="us-east-1"
-export KEYPAIR="MyDemoKeyPair"
-export CFN_STACK="InsInfoCluster"
-export CP_NAME="MyDemoProvider-$(date +%d%m%Y-%H%M%S)"
-export TASK_ROLE_NAME="DemoEcsTaskRole"
-export TASK_FAMILY="MyDemoTask"
-export TASK_NAME=$TASK_FAMILY
-export CONTAINER_PORT=80
-export CONTAINER_NAME="$TASK_NAME"
-export CONTAINER_IMAGE='santosham2007s/ec2-instance-info:v1'
-# export CONTAINER_IMAGE='342241566140.dkr.ecr.us-east-1.amazonaws.com/php_apache/web_image:with_improved_php_scripts_colour_env_var_logging_and_404_v5'
-export PAGE_COLOUR='Blue'
-export INSTANCE_TYPE='t2.medium'
-export SERVICE_NAME="InsInfoService"
 
 aws ec2 create-key-pair --key-name $KEYPAIR --query 'KeyMaterial' --output text --region $REGION  > $KEYPAIR.pem
 chmod 400 $KEYPAIR.pem
