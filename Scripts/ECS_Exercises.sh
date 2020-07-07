@@ -24,7 +24,7 @@ echo $VPCID
 ##################### Exercise - 1 ########################
 unset PROCEED; read -p "Create resource for Exercise 1 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
-if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
 
 EX1_SERVICE_NAME='InsInfoService-EX-1'
 
@@ -47,7 +47,7 @@ aws ecs create-service --cli-input-json file://./EX1_ECS_Service.json --region $
 ##################### Exercise - 2 ########################
 unset PROCEED; read -p "Create resource for Exercise 2 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
-if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
 
 EX2_SERVICE_NAME='InsInfoService-EX-2'
 
@@ -65,7 +65,7 @@ aws ecs create-service --cli-input-json file://./EX2_ECS_Service.json --region $
 ##################### Exercise - 3 ########################
 unset PROCEED; read -p "Create resource for Exercise 3 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
-if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
 
 EX3_SERVICE_NAME='InsInfoService-EX-3'
 
@@ -86,7 +86,7 @@ aws ecs create-service --cli-input-json file://./EX3_ECS_Service.json --region $
 ##################### Exercise - 4 ########################
 unset PROCEED; read -p "Create resource for Exercise 4 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
-if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
 
 EX4_SERVICE_NAME='InsInfoService-EX-4'
 
@@ -103,7 +103,7 @@ aws ecs create-service --cli-input-json file://./EX4_ECS_Service.json --region $
 ##################### Exercise - 5 ########################
 unset PROCEED; read -p "Create resource for Exercise 5 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
-if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
 
 EX5_SERVICE_NAME='InsInfoService-EX-5'
 
@@ -129,7 +129,7 @@ PRI_INS_ID2=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-
 ##################### Exercise - 6 ########################
 unset PROCEED; read -p "Create resource for Exercise 6 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
-if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
 
 EX6_SERVICE_NAME='InsInfoService-EX-6'
 
