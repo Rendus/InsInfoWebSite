@@ -1,11 +1,12 @@
 #!/bin/bash
 
-WORKING_DIR=$(pwd)
-cd ./Scripts
+PROCEED='n'
+
+InitialSetupLocation='./InitialSetup.sh'
+read -p "This script requires resources created by script InitialSetup.sh. Provide the location of script \"InitialSetup.sh\" like \"/tmp/mydir/InitialSetup.sh\" to proceed further.
+Default is \"./InitialSetup.sh\": " InitialSetupLocation
 
 source ./InitialSetup.sh
-
-cd $WORKING_DIR
 
 aws ecs register-task-definition --cli-input-json file://./EcsTaskDefinitions/MyWebAppTaskDefinition.json --region $REGION
 export TASK_ARN=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --query 'taskDefinitionArns[-1]' --output text --region $REGION)
@@ -15,6 +16,9 @@ VPCID=$(aws cloudformation describe-stack-resource --stack-name $CFN_STACK --log
 echo $VPCID
 
 ##################### Exercise - 1 ########################
+read -p "Create resource for Exercise 1 (y/n)" PROCEED?
+if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+
 EX1_SERVICE_NAME='InsInfoService-EX-1'
 
 EX1_TG_ARN=$(aws elbv2 create-target-group --name InsInfo-TG-EX-1 --protocol HTTP --port 80 --target-type instance --vpc-id $VPCID --health-check-path '/CpuStressTest.php' --region $REGION --query 'TargetGroups[*].TargetGroupArn' --output text)
@@ -34,6 +38,9 @@ sed -ie '4 i\
 aws ecs create-service --cli-input-json file://./EX1_ECS_Service.json --region $REGION
 
 ##################### Exercise - 2 ########################
+read -p "Create resource for Exercise 2 (y/n)" PROCEED?
+if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+
 EX2_SERVICE_NAME='InsInfoService-EX-2'
 
 cat EcsTaskDefinitions/MyWebAppTaskDefinition.json | jq '.containerDefinitions[1] += {"name": "MyDemoContainer", "image": "amazonlinux:2", "essential": true, "command": ["sleep", "60"]}' > EcsTaskDefinitions/EX2_MyWebAppTaskDefinition.json
@@ -48,6 +55,9 @@ sed -i '.org' -e "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" -e "s#TASK_DEFINITION#
 aws ecs create-service --cli-input-json file://./EX2_ECS_Service.json --region $REGION
 
 ##################### Exercise - 3 ########################
+read -p "Create resource for Exercise 3 (y/n)" PROCEED?
+if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+
 EX3_SERVICE_NAME='InsInfoService-EX-3'
 
 cat EcsTaskDefinitions/MyWebAppTaskDefinition.json | jq '.containerDefinitions[1] += {"name": "MyDemoContainer", "image": "amazonlinux:2.0", "essential": true, "command": ["sleep", "60"]}' > EcsTaskDefinitions/EX3_MyWebAppTaskDefinition.json
@@ -65,6 +75,9 @@ sed -i '.org' -e "s#ECS_CLUSTER_NAME#$ECS_CLUSTER_NAME#g" -e "s#TASK_DEFINITION#
 aws ecs create-service --cli-input-json file://./EX3_ECS_Service.json --region $REGION
 
 ##################### Exercise - 4 ########################
+read -p "Create resource for Exercise 4 (y/n)" PROCEED?
+if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+
 EX4_SERVICE_NAME='InsInfoService-EX-4'
 
 curl -s -o EX4_ECS_Service.json_1 https://raw.githubusercontent.com/santosh07bec/InsInfoWebSite/master/ECS_Service.json
@@ -78,6 +91,9 @@ for INSTANCE in $ECS_INSTANCES; do aws ecs put-attributes --attributes name=stac
 aws ecs create-service --cli-input-json file://./EX4_ECS_Service.json --region $REGION
 
 ##################### Exercise - 5 ########################
+read -p "Create resource for Exercise 5 (y/n)" PROCEED?
+if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+
 EX5_SERVICE_NAME='InsInfoService-EX-5'
 
 DEFAULT_SG=$(aws ec2 describe-security-groups --filters Name=group-name,Values=default Name=vpc-id,Values=$VPCID --query 'SecurityGroups[*].GroupId' --region $REGION --output text)
@@ -100,6 +116,9 @@ PRI_INS_ID1=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-
 PRI_INS_ID2=$(aws ec2 run-instances --image-id ami-0f646559bb4969174 --instance-type t2.medium --key-name MyDemoKeyPair --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_2 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
 
 ##################### Exercise - 6 ########################
+read -p "Create resource for Exercise 6 (y/n)" PROCEED?
+if [[ $PROCEED != 'y' ]] || [[ $PROCEED != 'Y' ]]; then Exit 1; fi
+
 EX6_SERVICE_NAME='InsInfoService-EX-6'
 
 VPCEID4=$(aws ec2 create-vpc-endpoint --vpc-id $VPCID --vpc-endpoint-type Interface --service-name com.amazonaws.$REGION.ecs --subnet-ids $PRI_SUB_1 $PRI_SUB_2 --security-group-ids $DEFAULT_SG $ECS_SG1 --query 'VpcEndpoint.VpcEndpointId' --output text --region $REGION)
