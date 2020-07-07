@@ -4,7 +4,7 @@ PROCEED='n'
 
 InitialSetupLocationD='.'
 read -p "This script requires resources created by script InitialSetup.sh. Provide the location where script \"InitialSetup.sh\" is located, like \"/tmp/mydir\" to proceed further.
-Default is \"$InitialSetupLocation\": " InitialSetupLocation
+Default is \"$InitialSetupLocationD\": " InitialSetupLocation
 
 if [[ -s $InitialSetupLocation/InitialSetup.sh ]]; then
   source $InitialSetupLocation/InitialSetup.sh
