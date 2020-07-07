@@ -131,6 +131,7 @@
     aws ecs deregister-task-definition --task-definition $TASK_ARN --region $REGION
     
     aws iam detach-role-policy --role-name $TASK_ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy --region $REGION
+    aws iam detach-role-policy --role-name $INSTANCE_ROLE --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM --region $REGION
     
     aws iam delete-role --role-name $TASK_ROLE_NAME --region $REGION
     
