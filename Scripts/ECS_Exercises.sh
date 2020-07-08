@@ -128,6 +128,7 @@ PRI_INS_ID2=$(aws ec2 run-instances --image-id $ECS_AMI_ID --instance-type $INST
 
 ##################### Exercise - 6 ########################
 ## This Scenario isn't working as expected. Needs more work to reproduce the DockerTimeoutError.
+## mkdir -p /mnt/p_iops_vol0; sudo fio --directory=/mnt/p_iops_vol0 --name fio_test_file --direct=1 --rw=randrw --rwmixread=50 --bs=16k --size=1G --numjobs=30 --time_based --runtime=12000 --group_reporting --norandommap
 unset PROCEED; read -p "Create resource for Exercise 6 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
