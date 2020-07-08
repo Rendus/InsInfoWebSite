@@ -127,6 +127,7 @@ PRI_INS_ID1=$(aws ec2 run-instances --image-id $ECS_AMI_ID --instance-type $INST
 PRI_INS_ID2=$(aws ec2 run-instances --image-id $ECS_AMI_ID --instance-type $INSTANCE_TYPE --key-name $KEYPAIR --security-group-ids $DEFAULT_SG $ECS_SG1  --subnet-id $PRI_SUB_2 --user-data file://./User_Data.txt --iam-instance-profile Name=$IAMPROFILE --query 'Instances[*].InstanceId' --output text --region $REGION)
 
 ##################### Exercise - 6 ########################
+## This Scenario isn't working as expected. Needs more work to reproduce the DockerTimeoutError.
 unset PROCEED; read -p "Create resource for Exercise 6 (y/n)?: " PROCEED
 PROCEED="${PROCEED:-y}"
 if ! [[ $PROCEED == 'y' || $PROCEED == 'Y' ]]; then Exit 1; fi
