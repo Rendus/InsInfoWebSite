@@ -18,8 +18,9 @@
 TEMPDIR="/tmp/ECSDEMO-$(date +%d%m%Y-%H%M%S)"
 mkdir -p $TEMPDIR
 
-export REGION="us-west-2"
-#export REGION="us-east-1"
+read -p "Provide AWS Region in which resource would be created (default is us-west-2): " REGION
+if [ -z $REGION ]; then REGION="us-east-1"; fi
+export REGION
 export KEYPAIR="MyDemoKeyPair"
 export CFN_STACK="InsInfoCluster"
 export CP_NAME="MyDemoProvider-$(date +%d%m%Y-%H%M%S)"
